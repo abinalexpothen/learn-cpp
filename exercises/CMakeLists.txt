@@ -1,0 +1,7 @@
+file(GLOB EXERCISES_SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+foreach(src ${EXERCISES_SRCS})
+  get_filename_component(name ${src} NAME_WE)
+  add_executable(exercise-${name} ${src})
+  target_compile_features(exercise-${name} PRIVATE cxx_std_23)
+  target_include_directories(exercise-${name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+endforeach()

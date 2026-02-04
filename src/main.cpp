@@ -1,8 +1,6 @@
 #include <iostream>
-// import std; -> unsupported on mac gcc/clang right now
 
-int main()
-{
+int main() {
   std::cout << "Enter your first name, second name and age in years: ";
   std::string first_name;
   std::string second_name;
