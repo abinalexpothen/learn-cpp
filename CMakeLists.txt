@@ -19,4 +19,5 @@ target_compile_options(learn-cpp PRIVATE
 target_include_directories(learn-cpp PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(learn/essential-operations)
+add_subdirectory(learn/templates-exceptions)
 add_subdirectory(exercises)

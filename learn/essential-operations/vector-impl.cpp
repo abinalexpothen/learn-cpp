@@ -15,8 +15,7 @@ class Vector {
 
   ~Vector() { delete[] elem; }
 
-  Vector& Vector::operator=(
-      const Vector& a);  // like a copy constructor, but deal with old elements
+  Vector& operator=(const Vector& a);  // like a copy constructor, but deal with old elements
 
   Vector(Vector&& arg);             // move constructor
   Vector& operator=(Vector&& arg);  // move assignment operator
