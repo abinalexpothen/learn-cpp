@@ -88,7 +88,6 @@ void Vector<T, A>::resize(int newsize, T val) {
   if (sz < newsize) std::uninitialized_fill(&elem[sz], &elem[newsize], val);
   if (newsize < sz) std::destroy(&elem[newsize], &elem[sz]);
   sz = newsize;
-  space = newsize;  // isn't this needed because we destroy elements?
 }
 
 // struct TestStruct {
