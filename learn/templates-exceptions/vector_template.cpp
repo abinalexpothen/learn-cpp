@@ -1,15 +1,24 @@
 #include <iostream>
+#include <memory>
 
 template <typename T>
-class allocator {
+class Allocator {
  public:
-  T* allocate(int n);            // allocate  space for n objects of type T
-  void deallocate(T* p, int n);  // deallocate n objects of type T starting at p
+  T* allocate(int n)  // allocate  space for n objects of type T
+  {
+    // a really fancy allocator code
+    return nullptr;
+  }
+
+  void deallocate(T* p, int n)  // deallocate n objects of type T starting at p
+  {
+    // an even more fancy deallocator code
+  }
 };
 
-template <typename T, typename A = allocator<T>>  // for all types T. Also called type generator
+template <typename T, typename A = Allocator<T>>  // for all types T. Also called type generator
 class Vector {
-  A alloc;    // member function allocate handles memory
+  A alloc;    // member function allocate/deallocate handles memory
   int sz;     // the size
   T* elem;    // a pointer to the elements
   int space;  // size + free space
@@ -40,12 +49,7 @@ class Vector {
   int size() const { return sz; }
   int capacity() const { return space; }
 
-  void resize(int sz, T def = T{}) {
-    std::cout << "Resizing";
-
-    // resizing algorithm
-  }
-
+  void resize(int sz, T def = T{});
   void push_back(const T& d);
   void reserve(int newalloc);
 
@@ -59,10 +63,33 @@ bool operator==(const Vector<T>&, const Vector<T>&);
 template <typename T>
 bool operator!=(const Vector<T>&, const Vector<T>&);
 
-// template <typename T, typename A = allocator<T>>
-// void Vector<T, A>::resize(int sz, T def) {
-//   std::cout << "sz is: " << sz;
-// }
+template <typename T, typename A>
+void Vector<T, A>::reserve(int newalloc) {
+  if (newalloc <= space) return;
+
+  T* p = alloc.allocate(newalloc);
+  std::uninitialized_move(elem, &elem[sz], p);  // move elements into uninitialized space
+  std::destroy(elem, &elem[space]);
+  alloc.deallocate(elem, capacity());
+  elem = p;
+  space = newalloc;
+}
+
+template <typename T, typename A>
+void Vector<T, A>::push_back(const T& val) {
+  reserve(space == 0 ? 8 : 2 * space);
+  std::construct_at(&elem[sz], val);
+  ++sz;
+}
+
+template <typename T, typename A>
+void Vector<T, A>::resize(int newsize, T val) {
+  reserve(newsize);
+  if (sz < newsize) std::uninitialized_fill(&elem[sz], &elem[newsize], val);
+  if (newsize < sz) std::destroy(&elem[newsize], &elem[sz]);
+  sz = newsize;
+  space = newsize;  // isn't this needed because we destroy elements?
+}
 
 // struct TestStruct {
 //   int a;
